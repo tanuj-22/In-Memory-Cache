@@ -1,14 +1,9 @@
 package com.project.evictionMethods;
 
-import com.project.linkedlist.Node;
-
-public interface EvictionPolicy {
+public interface EvictionPolicy<Key> {
 
 
-    Node evict();
-    void evict(Node node);
+    Key evict();
+    void keyAccessed(Key key);
 
-    void put( Node newNode);
-
-    void update(Node node);
 }

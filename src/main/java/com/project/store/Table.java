@@ -1,45 +1,53 @@
 package com.project.store;
 
-import com.project.linkedlist.Node;
-
 import java.util.HashMap;
-import java.util.NoSuchElementException;
 
 public class Table<U,T> implements Storage<U,T> {
 
     private final HashMap<U, T> map;
+    private int size;
+    private final int capacity;
 
-    public Table() {
+    private Table(){
+        this.capacity = 100;
+        this.map = new HashMap<>();
+    }
+
+    public Table(int capacity) {
+        this.capacity = capacity;
         this.map = new HashMap<>();
     }
 
 
     @Override
-    public boolean isPresent(U key) {
-        return map.containsKey(key);
-    }
-
-    @Override
     public int size() {
-        return map.size();
+        return size;
     }
 
     @Override
     public T get(U key) {
         if(!map.containsKey(key)){
-            throw new NoSuchElementException("Table does not contain the key provided");
+            return null;
         }
         return map.get(key);
 
     }
 
     @Override
-    public void put(U key, T value) {
+    public void add(U key, T value) {
+
+        if(size == capacity)  {
+            throw new RuntimeException("Capacity is full");
+        }
+
         map.put(key,value);
+        size++;
     }
 
     @Override
     public void remove(U key) {
         map.remove(key);
+        size--;
     }
+
 }

@@ -1,37 +1,34 @@
 package com.project.linkedlist;
 
-public class Node {
+public class Node<Key> {
 
-    private Node prev, next;
-    private Integer key,value;
+    private Node<Key> prev, next;
+    private final Key key;
 
-    public Node(int key,int value){
+    public Node(Key key){
         this.key = key;
-        this.value = value;
     }
 
-    public Node getPrev() {
+    protected Node<Key> getPrev() {
         return prev;
     }
 
-    public void setPrev(Node prev) {
+    protected void setPrev(Node<Key> prev) {
         this.prev = prev;
     }
 
-    public Node getNext() {
+    protected Node<Key> getNext() {
         return next;
     }
 
-    public void setNext(Node next) {
+    protected void setNext(Node<Key> next) {
         this.next = next;
     }
 
-    public Integer getKey() {
+    public Key getKey() {
         return key;
     }
 
-    public Integer getValue() {
-        return value;
-    }
+
 
 }

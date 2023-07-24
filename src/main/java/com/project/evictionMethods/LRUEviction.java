@@ -2,37 +2,43 @@ package com.project.evictionMethods;
 
 import com.project.linkedlist.DLL;
 import com.project.linkedlist.Node;
+import java.util.HashMap;
+import java.util.Map;
 
-public class LRUEviction implements EvictionPolicy {
+public class LRUEviction<Key> implements EvictionPolicy<Key> {
 
-    private final DLL list;
+    private final DLL<Key> list;
+    private final Map<Key,Node<Key>> keyNodeMap;
 
     public LRUEviction(){
-        this.list = new DLL();
+        this.list = new DLL<>();
+        this.keyNodeMap = new HashMap<>();
     }
 
 
     @Override
-    public Node evict() {
+    public Key evict() {
 
-        return list.removeLast();
+        Node<Key> evictedNode = list.getLast();
+        list.detachNode(evictedNode);
+        return evictedNode.getKey();
 
     }
 
     @Override
-    public void evict(Node node) {
-        list.remove(node);
+    public void keyAccessed(Key key) {
+
+        if(keyNodeMap.containsKey(key)){
+
+            Node<Key> fetchedNode = keyNodeMap.get(key);
+            list.update(fetchedNode);
+
+        }
+        else{
+            Node<Key> newNode = new Node<>(key);
+            keyNodeMap.put(key, newNode);
+            list.add(newNode);
+        }
+
     }
-
-    @Override
-    public void put(Node newNode) {
-        list.add(newNode);
-    }
-
-    @Override
-    public void update(Node node) {
-        list.update(node);
-    }
-
-
 }
