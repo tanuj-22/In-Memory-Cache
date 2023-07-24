@@ -1,50 +1,44 @@
 package com.project;
 
 import com.project.evictionMethods.EvictionPolicy;
-import com.project.linkedlist.Node;
 import com.project.store.Storage;
 
-public class Cache {
+public class Cache<K,V> {
 
-    EvictionPolicy evictionPolicy;
-    Storage<Integer,Node> storage;
+    EvictionPolicy<K> evictionPolicy;
+    Storage<K,V> storage;
     int capacity;
 
-    public Cache(EvictionPolicy evictionPolicy,Storage<Integer,Node> storage, int capacity){
+    public Cache(EvictionPolicy<K> evictionPolicy,Storage<K,V> storage, int capacity){
         this.capacity = capacity;
         this.evictionPolicy = evictionPolicy;
         this.storage = storage;
     }
 
-    public int get(int key){
-        if(!storage.isPresent(key)){
-            return -1;
-        }
+    public V get(K key){
 
-        Node node = storage.get(key);
-        evictionPolicy.update(node);
-        return node.getValue();
+        V value = storage.get(key);
+        if(value == null) return null;
+
+        evictionPolicy.keyAccessed(key);
+        return storage.get(key);
     }
 
-    public void put(int key,int value){
+    public void put(K key,V value){
 
-        if(storage.isPresent(key)){
-            Node node = storage.get(key);
+        if(storage.get(key) != null){
             storage.remove(key);
-            evictionPolicy.evict(node);
         }
 
         if(storage.size() == capacity){
 
-            Node removedNode = evictionPolicy.evict();
-            storage.remove(removedNode.getKey());
-
+            K keyToBeRemoved = evictionPolicy.evict();
+            storage.remove(keyToBeRemoved);
 
         }
 
-        Node newNode = new Node(key,value);
-        storage.put(key,newNode);
-        evictionPolicy.put(newNode);
+        storage.add(key,value);
+        evictionPolicy.keyAccessed(key);
 
     }
 
